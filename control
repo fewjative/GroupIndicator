@@ -1,0 +1,9 @@
+Package: com.joshdoctors.groupindicator
+Name: GroupIndicator
+Depends: mobilesubstrate
+Version: 0.0.1
+Architecture: iphoneos-arm
+Description: Displays a visual indicator in banner notifications to indicate if the notification is from a SMS group.
+Maintainer: Josh Doctors
+Author: Josh Doctors
+Section: Tweaks
