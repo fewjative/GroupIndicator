@@ -86,6 +86,48 @@ static NSString * indicatorText = nil;
 
 %end
 
+@interface SBAlertItem : NSObject
+-(id)_groupID;
+-(id)name;
+-(id)address;
+-(BBBulletin*)bulletin;
+-(UIAlertView*)alertSheet;
+@end
+
+%hook SBAlertItemsController
+
+-(void)activateAlertItem:(id)alert
+{
+	%orig;
+
+	if(!enableTweak)
+		return;
+
+	if([(SBAlertItem*)alert isKindOfClass:%c(CKMessageAlertItem)])
+	{
+		NSDictionary * assistantContext = [NSDictionary dictionaryWithDictionary:[alert bulletin].context[@"AssistantContext"]];
+
+		if([[assistantContext allKeys] containsObject:@"msgRecipients"])
+		{
+			NSString * title;
+
+			if(memberCount)
+			{
+				int count = [assistantContext[@"msgRecipients"] count] - 1;
+				title = [NSString stringWithFormat:@"+%d %@",count,[[alert alertSheet] title]];
+			}
+			else
+				title = [NSString stringWithFormat:@"%@%@",indicatorText,[[alert alertSheet] title]];
+
+			[alert alertSheet].title = title;
+		}
+		else
+			return;
+	}
+}
+
+%end
+
 static void loadPrefs() 
 {
     CFPreferencesAppSynchronize(CFSTR("com.joshdoctors.groupindicator"));
